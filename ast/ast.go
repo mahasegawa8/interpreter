@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/mahasegawa8/token"
+import "github.com/mahasegawa8/interpreter/token"
 
 type Node interface {
     TokenLiteral() string
@@ -34,7 +34,7 @@ type Identifier struct {
     Value string
 }
 
-func (i *Identifier) expressionNode()
+func (i *Identifier) expressionNode() {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
 func (p *Program) TokenLiteral() string {
