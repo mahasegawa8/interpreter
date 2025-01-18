@@ -38,6 +38,8 @@ const (
     LT          = "<"
     GT          = ">"
     ILLEGAL     = "ILLEGAL"
+    EQ          = "=="
+    NOT_EQ      = "!="
 )
 
 var keywords = map[string]TokenType{

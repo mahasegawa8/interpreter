@@ -2,6 +2,14 @@ package lexer
 
 import "github.com/mahasegawa8/interpreter/token"
 
+func (l *Lexer) peekChar() byte {
+    if l.readPosition >= len(l.input) {
+        return 0
+    } else {
+        return l.input[l.readPosition]
+    }
+}
+
 func (l *Lexer) NextToken() token.Token {
     var tok token.Token
 
@@ -9,7 +17,13 @@ func (l *Lexer) NextToken() token.Token {
 
     switch l.ch {
     case '=':
-        tok = newToken(token.ASSIGN, l.ch)
+        if l.peekChar() == '=' {
+            ch := l.ch
+            l.readChar()
+            tok = token.Token{Type: token.EQ, Literal: string(ch) + string(l.ch)}
+        } else {
+            tok = newToken(token.ASSIGN, l.ch)
+        }
     case '+':
         tok = newToken(token.PLUS, l.ch)
     case '-':
@@ -43,6 +57,10 @@ func (l *Lexer) NextToken() token.Token {
         if isLetter(l.ch) {
             tok.Literal = l.readIdentifier()
             tok.Type = token.LookupIdent(tok.Literal)
+            return tok
+        } else if isDigit(l.ch) {
+            tok.Literal = l.readNumber()
+            tok.Type = token.INT
             return tok
         } else {
             tok = newToken(token.ILLEGAL, l.ch)
@@ -98,4 +116,15 @@ func (l *Lexer) readChar() {
     l.readPosition += 1
 }
 
+func isDigit(ch byte) bool {
+    return '0' <= ch && ch <= '9'
+}
+
+func (l *Lexer) readNumber() string {
+    position := l.position
+    for isDigit(l.ch) {
+        l.readChar()
+    }
+    return l.input[position:l.position]
+}
 
